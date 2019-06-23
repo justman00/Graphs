@@ -3,56 +3,157 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
+
 class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
+
     def __init__(self):
         self.vertices = {}
+
     def add_vertex(self, vertex):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex] = set()
+
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            raise IndexError("That vertex does not exist")
+
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # creates an empty queue and an empty set to store the visited nodes
+        # while the queue is not empty dequeue the first vertex from the queue
+        queue = Queue()
+        visited = set()
+
+        queue.enqueue(starting_vertex)
+
+        while queue.size() > 0:
+            current = queue.dequeue()
+
+            if current not in visited:
+                visited.add(current)
+
+                for val in self.vertices[current]:
+                    queue.enqueue(val)
+
+            # print(visited)
+
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
+        stack = Stack()
+        visited = set()
+
+        stack.push(starting_vertex)
+
+        while stack.size() > 0:
+            current = stack.pop()
+
+            if current not in visited:
+                visited.add(current)
+
+                for val in self.vertices[current]:
+                    stack.push(val)
+
+            # print(visited)
         pass  # TODO
+
     def dft_recursive(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
         """
-        pass  # TODO
+        stack = Stack()
+        visited = set()
+
+        stack.push(starting_vertex)
+
+        def helper(s):
+            if s.size() == 0:
+                return
+            current = stack.pop()
+
+            if current not in visited:
+                visited.add(current)
+
+                for val in self.vertices[current]:
+                    stack.push(val)
+
+            helper(s)
+
+        helper(stack)
+
+        # print(visited)
+
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        queue = Queue()
+        visited = set()
+
+        queue.enqueue([starting_vertex])
+
+        while queue.size() > 0:
+            path = queue.dequeue()
+
+            v = path[-1]
+
+            if v == destination_vertex:
+                return path
+
+            if v not in visited:
+                visited.add(v)
+
+                for val in self.vertices[v]:
+                    path_copy = path.copy()
+                    path_copy.append(val)
+                    queue.enqueue(path_copy)
+
+        print(visited)
+
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        s = Stack()
+        visited = set()
 
+        s.push([starting_vertex])
 
+        while s.size() > 0:
+            path = s.pop()
 
+            v = path[-1]
+
+            if v == destination_vertex:
+                return path
+
+            if v not in visited:
+                visited.add(v)
+
+                for val in self.vertices[v]:
+                    copy_path = path.copy()
+
+                    copy_path.append(val)
+                    s.push(copy_path)
 
 
 if __name__ == '__main__':
@@ -80,7 +181,7 @@ if __name__ == '__main__':
     Should print:
         {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
     '''
-    print(graph.vertices)
+    # print(graph.vertices)
 
     '''
     Valid DFT paths:
