@@ -1,8 +1,29 @@
+from random import shuffle
+import random
+import math
+
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, value):
+        self.queue.append(value)
+
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return len(self.queue)
 
 
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -47,8 +68,30 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(numUsers):
+            self.addUser(f"User {i}")
 
         # Create friendships
+        all_users = []
+        for key, value in self.friendships.items():
+            all_users.append(key)
+
+        current = 0
+
+        for key, value in self.friendships.items():
+            users_copy = list(all_users)
+            user = users_copy.pop(current)
+            shuffle(users_copy)
+
+            current += 1
+
+            random_num = random.randint(0, 4) * 2
+
+            frs = users_copy[0:random_num]
+
+            for u in frs:
+                if u > user:
+                    self.addFriendship(user, u)
 
     def getAllSocialPaths(self, userID):
         """
@@ -61,12 +104,39 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+
+        q.enqueue([userID])
+
+        while q.size() > 0:
+            path = q.dequeue()
+
+            v = path[-1]
+
+            if v not in visited:
+                visited[v] = path
+
+                for user in self.friendships[v]:
+                    copy_path = list(path)
+
+                    copy_path.append(user)
+
+                    q.enqueue(copy_path)
+
         return visited
 
 
-if __name__ == '__main__':
-    sg = SocialGraph()
-    sg.populateGraph(10, 2)
-    print(sg.friendships)
-    connections = sg.getAllSocialPaths(1)
-    print(connections)
+# if __name__ == '__main__':
+#     sg = SocialGraph()
+#     sg.populateGraph(10, 2)
+#     print(sg.friendships)
+#     connections = sg.getAllSocialPaths(1)
+#     print(connections)
+
+
+graph = SocialGraph()
+
+graph.populateGraph(9, 2)
+print('---------')
+print(graph.friendships)
+print(graph.getAllSocialPaths(5))

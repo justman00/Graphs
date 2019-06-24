@@ -66,7 +66,6 @@ def earliest_ancestor(ancestors, starting_node):
         last_one = path[-1]
 
         if len(path) > 1:
-            earliest = last_one
             ans.append((last_one, len(path)))
 
         if last_one not in visited:
